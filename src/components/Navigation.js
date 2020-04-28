@@ -4,14 +4,14 @@ import styled from 'styled-components';
 
 const Styles = styled.div`
 .navbar {
-    background-color: #222;
+    background-color: #006666; //This will change the background color of our navigation bar
 }
 
 .navbar-brand, .navbar-nav .nav-link{
-    color: #bbb;
+    color: #ffffff; //This will change our text color on navigation bar
 
     &:hover {
-        color: white;
+        color: #00ffcc; //This will change the highlight color of Navigation bar
     }
 }
 `;
