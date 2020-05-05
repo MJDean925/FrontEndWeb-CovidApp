@@ -7,6 +7,7 @@ import { NoMatch } from './NoMatch'
 import {Layout } from './components/Layout';
 import { Navigation } from './components/Navigation'
 import { Jumbotron } from './components/Jumbotron'
+import Scatter from './components/testScatter'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route path="/Symptoms" component={Symptoms} />
           <Route path="/HowToProtectYourself" component={HowToProtectYourself} />
+          <Route path="/Scatter" component={Scatter} />
           <Route component={NoMatch} />
         </Switch>
       </Router>
