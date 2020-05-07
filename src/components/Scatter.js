@@ -28,6 +28,14 @@ function compareValues(key, order = 'asc') {
   //After firebase is loaded and the call is modified for the dropdown and data type, this class can be
   //renamed and copy/pasted to the bottom of this document then that renamed for next data type
   //This can be repeated for all scatters
+  //If professor removes firebase requirement, then have dropdown pull from api to populate 2 data arrays
+  //and use the daily array to build a table by creating a var and setting the beginning html, then append
+  //table items based on the daily array after it is sorted by the above function, then append the closing
+  //html, this can be done in an addtional js file that gets imported like the scatter files, then the daily
+  //data gets passed to it like with the scatters so the dropdown render would just need a <DailyTable /> item
+  //for the scatters have the historic array contain {date:...,cases:...,deaths:..., etc} and when
+  //drawing the scatter just say the line uses cases or deaths, that way only one array needs to be initialized
+  //MAKE SURE IT IS DONE IN CONSTRUCTOR SO LENGTHY API CALL AND DATA PARSE ONLY HAPPENS ONCE PER PAGE LOAD
 class Scatter extends Component {
     render() {
         var data = [
