@@ -54,10 +54,15 @@ class Dropdown extends Component{
         fetch('https://covidtracking.com/api/v1/states/daily.json')
             .then(response => response.json())
             .then(data => {
-                data.forEach(v => {
+                data.forEach(z => {
                     //Need to reformat date to make it look nicer on graph
-                    console.log(v.date);
+                    //console.log(v.date);
+                    var v = z.date.toString(10);
+                    var d = v[4] + v[5] + '-' + v[6] + v[7] + '-' + v[0] + v[1] + v[2] + v[3];
+                    console.log(d);
+                    z.date = d;
                 });
+                console.log(data);
                 this.setState({histData: data});
                 var dat = data;
                 var s = [];
@@ -67,6 +72,7 @@ class Dropdown extends Component{
                     }
                 });
                 this.setState({scatterData: s})
+                console.log(s);
         }); 
         
     }
@@ -83,6 +89,7 @@ class Dropdown extends Component{
                     <option value="CO">Colorado</option>
                     <option value="CT">Connecticut</option>
                     <option value="DE">Delaware</option>
+                    <option value="DC">District of Columbia</option>
                     <option value="FL">Florida</option>
                     <option value="GA">Georgia</option>
                     <option value="HI">Hawaii</option>
@@ -126,9 +133,17 @@ class Dropdown extends Component{
                     <option value="WI">Wisconsin</option>
                     <option value="WY">Wyoming</option>
                 </select>
-                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData}/>
-                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData}/>
-
+                <p>Positive Infections by Date</p>
+                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="positive"/>
+                <p>Daily Infection Rate</p>
+                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="positiveIncrease"/>
+                <p>Confirmed Deaths by Date</p>
+                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="death"/>
+                <p>Currently Hospitalized*</p>
+                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="hospitalizedCurrently"/>
+                <p>Currently In ICU*</p>
+                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="inIcuCurrently"/>
+                <p>*Not all states report these statistics, charts may be blank</p>
             </div>
         );
     }

@@ -39,7 +39,7 @@ function compareValues(key, order = 'asc') {
 class Scatter extends Component {
     render() {
         var data = [
-            {x: '5-12-2020', y: 512},
+            {x: '5-12-2020', y: 512, z:3653},
             {x: '5-06-2020', y: 8},
             {x: '5-07-2020', y: 16},
             {x: '5-08-2020', y: 32},
@@ -69,9 +69,8 @@ class Scatter extends Component {
 
         return (
             <div>
-                <p>{this.props.sel}</p>
                 <LineChart width={600} height={300} data={this.props.dat}>
-                    <Line type="monotone" dataKey="positive" stroke="#8884d8" />
+                    <Line type="monotone" dataKey={this.props.what} stroke="#8884d8" />
                     <CartesianGrid stroke="#ccc" />
                     <XAxis dataKey="date" />
                     <YAxis />
