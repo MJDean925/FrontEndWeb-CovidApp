@@ -56,22 +56,24 @@ class Scatter extends Component {
         ];
 
         //Change the 'USA' to this.props.sel and console.log to storing in data[]
-        this.props.db.collection('USA').get().then((query) => {
-          query.docs.forEach(doc => {
-            console.log(doc.id);
-          });
-        })
+        // this.props.db.collection('USA').get().then((query) => {
+        //   query.docs.forEach(doc => {
+        //     console.log(doc.id);
+        //   });
+        // })
 
-        console.log(data);
         data.sort(compareValues('x'));
+
+        
+        //onsole.log(data);
 
         return (
             <div>
                 <p>{this.props.sel}</p>
-                <LineChart width={600} height={300} data={data}>
-                    <Line type="monotone" dataKey="y" stroke="#8884d8" />
+                <LineChart width={600} height={300} data={this.props.dat}>
+                    <Line type="monotone" dataKey="positive" stroke="#8884d8" />
                     <CartesianGrid stroke="#ccc" />
-                    <XAxis dataKey="x" />
+                    <XAxis dataKey="date" />
                     <YAxis />
                 </LineChart>
             </div>

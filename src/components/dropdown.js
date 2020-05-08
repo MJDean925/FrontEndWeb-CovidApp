@@ -2,90 +2,132 @@ import React, { Component } from 'react';
 import Scatter from './Scatter';
 import firebase from './firebase';
 
+function compareValues(key, order = 'asc') {
+    return function innerSort(a, b) {
+      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        // property doesn't exist on either object
+        return 0;
+      }
+  
+      const varA = (typeof a[key] === 'string')
+        ? a[key].toUpperCase() : a[key];
+      const varB = (typeof b[key] === 'string')
+        ? b[key].toUpperCase() : b[key];
+  
+      let comparison = 0;
+      if (varA > varB) {
+        comparison = 1;
+      } else if (varA < varB) {
+        comparison = -1;
+      }
+      return (
+        (order === 'desc') ? (comparison * -1) : comparison
+      );
+    };
+  }
+
 class Dropdown extends Component{
     constructor(props){
         super(props);
-
-        // var firebaseConfig = {
-        //     apiKey: "AIzaSyANBWBR4fSx-dpo5KmkMxpyAXjy2V6WQlU",
-        //     authDomain: "covid-web-704d0.firebaseapp.com",
-        //     databaseURL: "https://covid-web-704d0.firebaseio.com",
-        //     projectId: "covid-web-704d0",
-        //     storageBucket: "covid-web-704d0.appspot.com",
-        //     messagingSenderId: "96586993761",
-        //     appId: "1:96586993761:web:dc17f95d9f06a91895da20"
-        //   };
-        //   // Initialize Firebase
-        //   firebase.initializeApp(firebaseConfig);
-
-          //this.db = firebase.firestore();
-        
-        this.state = {selection: "USA", db: firebase.firestore()};
-        //var db = firebase.firestore();
-        //db.collection('USA').get().then((query) => {query.docs.forEach(doc => {console.log(doc.id);});})
-
+        this.state = {selection: "CA", db: firebase.firestore()};
     }
     handleChange(e){
         this.setState({selection:e.target.value}); 
+        var dat = this.state.histData;
+        var s = [];
+        dat.forEach(v => {
+            if (v.state === e.target.value){
+                s.unshift(v);
+            }
+        });
+        this.setState({scatterData: s})
+    }
+    componentDidMount(){
+        fetch('https://covidtracking.com/api/v1/states/current.json')
+            .then(response => response.json())
+            .then(data => {
+                var dat = data;
+                dat.sort(compareValues('positive', 'desc'));
+                console.log(dat);
+                this.setState({dailyData: dat});
+            });
+        fetch('https://covidtracking.com/api/v1/states/daily.json')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(v => {
+                    //Need to reformat date to make it look nicer on graph
+                    console.log(v.date);
+                });
+                this.setState({histData: data});
+                var dat = data;
+                var s = [];
+                dat.forEach(v => {
+                    if (v.state === this.state.selection){
+                        s.unshift(v);
+                    }
+                });
+                this.setState({scatterData: s})
+        }); 
+        
     }
     render(){
+
         return(
             <div>
                 <select value={this.state.selection} onChange={(e) => {this.handleChange(e);}}>
-                    <option value="USA">USA</option>
-                    <option value="Alabama">Alabama</option>
-                    <option value="Alaska">Alaska</option>
-                    <option value="Arizona">Arizona</option>
-                    <option value="Arkansas">Arkansas</option>
-                    <option value="California">California</option>
-                    <option value="Colorado">Colorado</option>
-                    <option value="Connecticut">Connecticut</option>
-                    <option value="Delaware">Delaware</option>
-                    <option value="Florida">Florida</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Hawaii">Hawaii</option>
-                    <option value="Idaho">Idaho</option>
-                    <option value="Illinois">Illinois</option>
-                    <option value="Indiana">Indiana</option>
-                    <option value="Iowa">Iowa</option>
-                    <option value="Kansas">Kansas</option>
-                    <option value="Kentucky">Kentucky</option>
-                    <option value="Louisiana">Louisiana</option>
-                    <option value="Maine">Maine</option>
-                    <option value="Maryland">Maryland</option>
-                    <option value="Massachusetts">Massachusetts</option>
-                    <option value="Michigan">Michigan</option>
-                    <option value="Minnesota">Minnesota</option>
-                    <option value="Mississippi">Mississippi</option>
-                    <option value="Missouri">Missouri</option>
-                    <option value="Montana">Montana</option>
-                    <option value="Nebraska">Nebraska</option>
-                    <option value="Nevada">Nevada</option>
-                    <option value="New Hampshire">New Hampshire</option>
-                    <option value="New Jersey">New Jersey</option>
-                    <option value="New Mexico">New Mexico</option>
-                    <option value="New York">New York</option>
-                    <option value="North Carolina">North Carolina</option>
-                    <option value="North Dakota">North Dakota</option>
-                    <option value="Ohio">Ohio</option>
-                    <option value="Oklahoma">Oklahoma</option>
-                    <option value="Oregon">Oregon</option>
-                    <option value="Pennsylvania">Pennsylvania</option>
-                    <option value="Rhode Island">Rhode Island</option>
-                    <option value="South Carolina">South Carolina</option>
-                    <option value="South Dakota">South Dakota</option>
-                    <option value="Tennessee">Tennessee</option>
-                    <option value="Texas">Texas</option>
-                    <option value="Utah">Utah</option>
-                    <option value="Vermont">Vermont</option>
-                    <option value="Virginia">Virginia</option>
-                    <option value="Washington">Washington</option>
-                    <option value="West Virginia">West Virginia</option>
-                    <option value="Wisconsin">Wisconsin</option>
-                    <option value="Wyoming">Wyoming</option>
+                    <option value="AL">Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value="CO">Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <option value="DE">Delaware</option>
+                    <option value="FL">Florida</option>
+                    <option value="GA">Georgia</option>
+                    <option value="HI">Hawaii</option>
+                    <option value="ID">Idaho</option>
+                    <option value="IL">Illinois</option>
+                    <option value="IN">Indiana</option>
+                    <option value="IA">Iowa</option>
+                    <option value="KS">Kansas</option>
+                    <option value="KY">Kentucky</option>
+                    <option value="LA">Louisiana</option>
+                    <option value="ME">Maine</option>
+                    <option value="MD">Maryland</option>
+                    <option value="MA">Massachusetts</option>
+                    <option value="MI">Michigan</option>
+                    <option value="MN">Minnesota</option>
+                    <option value="MS">Mississippi</option>
+                    <option value="MO">Missouri</option>
+                    <option value="MT">Montana</option>
+                    <option value="NE">Nebraska</option>
+                    <option value="NV">Nevada</option>
+                    <option value="NH">New Hampshire</option>
+                    <option value="NJ">New Jersey</option>
+                    <option value="NM">New Mexico</option>
+                    <option value="NY">New York</option>
+                    <option value="NC">North Carolina</option>
+                    <option value="ND">North Dakota</option>
+                    <option value="OH">Ohio</option>
+                    <option value="OK">Oklahoma</option>
+                    <option value="OR">Oregon</option>
+                    <option value="PA">Pennsylvania</option>
+                    <option value="RI">Rhode Island</option>
+                    <option value="SC">South Carolina</option>
+                    <option value="SD">South Dakota</option>
+                    <option value="TN">Tennessee</option>
+                    <option value="TX">Texas</option>
+                    <option value="UT">Utah</option>
+                    <option value="VT">Vermont</option>
+                    <option value="VA">Virginia</option>
+                    <option value="WA">Washington</option>
+                    <option value="WV">West Virginia</option>
+                    <option value="WI">Wisconsin</option>
+                    <option value="WY">Wyoming</option>
                 </select>
-                <Scatter sel={this.state.selection} db={this.state.db}/>
-                <Scatter sel={this.state.selection} db={this.state.db}/>
+                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData}/>
+                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData}/>
 
             </div>
         );
