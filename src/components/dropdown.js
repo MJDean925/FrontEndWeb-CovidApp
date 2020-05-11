@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Scatter from './Scatter';
-import firebase from './firebase';
+import StateTable from './StateTable';
 
 function compareValues(key, order = 'asc') {
     return function innerSort(a, b) {
@@ -29,7 +29,7 @@ function compareValues(key, order = 'asc') {
 class Dropdown extends Component{
     constructor(props){
         super(props);
-        this.state = {selection: "CA", db: firebase.firestore()};
+        this.state = {selection: "CA", dailyData: [], histData: [], scatterData: [], selectedData: {}};
     }
     handleChange(e){
         this.setState({selection:e.target.value}); 
@@ -41,6 +41,15 @@ class Dropdown extends Component{
             }
         });
         this.setState({scatterData: s})
+        dat = this.state.dailyData;
+        var today;
+        dat.forEach(v => {
+            if (v.state === e.target.value){
+                today = v;
+                // if (today.recovered === null) today.recovered = 'Unreported';
+            }
+        });
+        this.setState({selectedData: today});
     }
     componentDidMount(){
         fetch('https://covidtracking.com/api/v1/states/current.json')
@@ -48,21 +57,27 @@ class Dropdown extends Component{
             .then(data => {
                 var dat = data;
                 dat.sort(compareValues('positive', 'desc'));
-                console.log(dat);
+                dat.forEach(v => {
+                    // if (v.recovered === null) v.recovered = 'Unreported'
+                })
                 this.setState({dailyData: dat});
+                var today;
+                dat.forEach(v => {
+                if (v.state === this.state.selection){
+                    today = v;
+                    // if (today.recovered === null) today.recovered = 'Unreported';
+                }
+        });
+        this.setState({selectedData: today});
             });
         fetch('https://covidtracking.com/api/v1/states/daily.json')
             .then(response => response.json())
             .then(data => {
                 data.forEach(z => {
-                    //Need to reformat date to make it look nicer on graph
-                    //console.log(v.date);
                     var v = z.date.toString(10);
                     var d = v[4] + v[5] + '-' + v[6] + v[7] + '-' + v[0] + v[1] + v[2] + v[3];
-                    console.log(d);
                     z.date = d;
                 });
-                console.log(data);
                 this.setState({histData: data});
                 var dat = data;
                 var s = [];
@@ -72,14 +87,16 @@ class Dropdown extends Component{
                     }
                 });
                 this.setState({scatterData: s})
-                console.log(s);
         }); 
         
     }
     render(){
-
+        if (this.state.dailyData === null) return null;
+        var reco = this.state.selectedData.recovered;
+        if (reco === null) reco = 'Unreported';
         return(
             <div>
+                <StateTable dat={this.state.dailyData} />
                 <select value={this.state.selection} onChange={(e) => {this.handleChange(e);}}>
                     <option value="AL">Alabama</option>
                     <option value="AK">Alaska</option>
@@ -133,16 +150,22 @@ class Dropdown extends Component{
                     <option value="WI">Wisconsin</option>
                     <option value="WY">Wyoming</option>
                 </select>
+                <h1>{this.state.selection}</h1>
+                <h2>Total Positive Cases: {this.state.selectedData.positive} Cases</h2>
+                <h2>Predicted Positive Cases: {this.state.selectedData.positive * 10}-{this.state.selectedData.death * 1000} Cases</h2>
+                <h2>Total Deaths: {this.state.selectedData.death} Deaths</h2>
+                <h2>Total Recovered: {reco} Recoveries</h2>
+
                 <p>Positive Infections by Date</p>
-                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="positive"/>
+                <Scatter sel={this.state.selection} dat={this.state.scatterData} what="positive"/>
                 <p>Daily Infection Rate</p>
-                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="positiveIncrease"/>
+                <Scatter sel={this.state.selection} dat={this.state.scatterData} what="positiveIncrease"/>
                 <p>Confirmed Deaths by Date</p>
-                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="death"/>
+                <Scatter sel={this.state.selection} dat={this.state.scatterData} what="death"/>
                 <p>Currently Hospitalized*</p>
-                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="hospitalizedCurrently"/>
+                <Scatter sel={this.state.selection} dat={this.state.scatterData} what="hospitalizedCurrently"/>
                 <p>Currently In ICU*</p>
-                <Scatter sel={this.state.selection} db={this.state.db} dat={this.state.scatterData} what="inIcuCurrently"/>
+                <Scatter sel={this.state.selection} dat={this.state.scatterData} what="inIcuCurrently"/>
                 <p>*Not all states report these statistics, charts may be blank</p>
             </div>
         );
