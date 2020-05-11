@@ -46,7 +46,6 @@ class Dropdown extends Component{
         dat.forEach(v => {
             if (v.state === e.target.value){
                 today = v;
-                // if (today.recovered === null) today.recovered = 'Unreported';
             }
         });
         this.setState({selectedData: today});
@@ -57,15 +56,11 @@ class Dropdown extends Component{
             .then(data => {
                 var dat = data;
                 dat.sort(compareValues('positive', 'desc'));
-                dat.forEach(v => {
-                    // if (v.recovered === null) v.recovered = 'Unreported'
-                })
                 this.setState({dailyData: dat});
                 var today;
                 dat.forEach(v => {
                 if (v.state === this.state.selection){
                     today = v;
-                    // if (today.recovered === null) today.recovered = 'Unreported';
                 }
         });
         this.setState({selectedData: today});
