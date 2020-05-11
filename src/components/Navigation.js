@@ -26,7 +26,7 @@ export const Navigation = () => (
                 <Nav.Item><Nav.Link href="/">Home</Nav.Link></Nav.Item>
                 <Nav.Item><Nav.Link href="/Symptoms">Symptoms</Nav.Link></Nav.Item>
                 <Nav.Item><Nav.Link href="/HowToProtectYourself">How To Protect Yourself</Nav.Link></Nav.Item>
-                <Nav.Item><Nav.Link href="/Scatter">Scatterplot</Nav.Link></Nav.Item>
+                <Nav.Item><Nav.Link href="/Statistics">State Statistics</Nav.Link></Nav.Item>
             </Nav>
             </Navbar.Collapse>
         </Navbar>

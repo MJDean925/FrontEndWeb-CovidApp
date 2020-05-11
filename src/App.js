@@ -20,7 +20,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route path="/Symptoms" component={Symptoms} />
           <Route path="/HowToProtectYourself" component={HowToProtectYourself} />
-          <Route path="/Scatter" component={Dropdown} />
+          <Route path="/Statistics" component={Dropdown} />
           <Route component={NoMatch} />
         </Switch>
       </Router>
