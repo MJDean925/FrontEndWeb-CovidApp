@@ -6,7 +6,7 @@ export const Symptoms = () => (
         <ul>
             <li>Symptoms may appear 2-14 days after being exposed to the virus. Below are the symptoms you should look out for:</li>
             <li>Cough</li>
-            <li>Shortness of breath of difficulty breathing</li>
+            <li>Shortness of breath or difficulty breathing</li>
             <li>Fever</li>
             <li>Chills</li>
             <li>Muscle Aches</li>
